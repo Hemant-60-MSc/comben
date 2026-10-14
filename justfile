@@ -1,3 +1,7 @@
+clean:
+    rm -rf build
+    rm -rf wrapper*.so
+
 compilec:
     gcc -fPIC -shared -o test_function.so test_function.c
 

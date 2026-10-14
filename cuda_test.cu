@@ -5,6 +5,21 @@
 #include <stdio.h>
 #include "cuda_test.h"
 
+#define CUDA_CHECK(call)                                     \
+    do                                                       \
+    {                                                        \
+        cudaError_t result = call;                           \
+        if (result != cudaSuccess)                           \
+        {                                                    \
+            fprintf(stderr,                                  \
+                    "[CUDA Runtime Error]  %s:%i:%d = %s\n", \
+                    __FILE__,                                \
+                    __LINE__,                                \
+                    result,                                  \
+                    cudaGetErrorString(result));             \
+        }                                                    \
+    } while (0)
+
 struct GPUTimingAttributes
 {
     float cuda_malloc_;
@@ -26,24 +41,26 @@ extern "C" float run_sample_kernel()
 
     // GPU Array(s)
     float *c_A = NULL;
+    CUDA_CHECK(cudaFree(0));
 
     clock_t start_time = clock();
 
     for (int i = 0; i < GPU_ITERATIONS; i++)
     {
-        cudaMalloc((void **)&c_A, allocation_size);
-        cudaMemcpy(c_A, A, allocation_size, cudaMemcpyHostToDevice);
+        CUDA_CHECK(cudaMalloc((void **)&c_A, allocation_size));
+        CUDA_CHECK(cudaMemcpy(c_A, A, allocation_size, cudaMemcpyHostToDevice));
 
         int num_blocks = (numElements + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
         sample_kernel<<<num_blocks, THREADS_PER_BLOCK>>>();
-        cudaMemcpy(A, c_A, allocation_size, cudaMemcpyDeviceToHost);
-        cudaDeviceSynchronize();
+        CUDA_CHECK(cudaGetLastError());
+        CUDA_CHECK(cudaMemcpy(A, c_A, allocation_size, cudaMemcpyDeviceToHost));
 
-        cudaFree(c_A);
-        free(A);
+        CUDA_CHECK(cudaFree(c_A));
     }
-    clock_t end_time = clock();
     cudaDeviceSynchronize();
+    clock_t end_time = clock();
+
+    free(A);
 
     return (float)(end_time - start_time) / CLOCKS_PER_SEC;
 }

@@ -9,7 +9,7 @@ P_CORE_LINUX_FILE_PATH = '/sys/devices/cpu_core/cpus'
 E_CORE_LINUX_FILE_PATH = '/sys/devices/cpu_atom/cpus'
 
 # TODO: Set tot a higher value
-ITERATIONS = 10_000_000 # Leaving small for now for quick testing
+ITERATIONS = 1_000_000 # Leaving small for now for quick testing
 
 def main():
     comm = MPI.COMM_WORLD
