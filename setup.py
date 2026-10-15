@@ -11,7 +11,8 @@ ext = Extension(
     extra_objects=["cuda_test.o"],    
     depends=["cuda_test.o", "cuda_test.cu", "cuda_test.h"],                  
     libraries=["cudart"],
-    extra_link_args=["-lstdc++"],                       
+    extra_compile_args=["-pthread"],
+    extra_link_args=["-lstdc++", "-pthread"],                       
 )
 
 setup(ext_modules=cythonize(ext))

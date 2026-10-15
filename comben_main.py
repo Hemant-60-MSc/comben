@@ -18,6 +18,7 @@ def main():
         "ID": None,
         "GPU_SAMPLE_KERNEL_TIME": None,
         "CPU_TEST_FUNCION": None,
+        "CPU_PTHREAD_TIME": None
     }
 
     comm = MPI.COMM_WORLD
@@ -43,7 +44,7 @@ def main():
     comm.Barrier()
 
     gpu_time = None
-
+    p_thread_time = None
     for curr_core in range(size):
         comm.Barrier()
         if rank == curr_core:
@@ -51,6 +52,7 @@ def main():
     comm.Barrier()
 
     core_data["GPU_SAMPLE_KERNEL_TIME"] = gpu_time
+    core_data["CPU_PTHREAD_TIME"] = wrapper.py_pthread_measure_sample_function()
 
     if (rank == 0):
         core_data["TYPE"] = cpu_info.classify_core_id(rank)

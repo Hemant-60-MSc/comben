@@ -15,10 +15,14 @@ cdef extern from *:
 
 cdef extern from "test_function.h":
     float test_function()
+    float pthread_measure_sample_function()
 
 # Expose a Python-callable function
 def py_test_function() -> float:
     return test_function()
+
+def py_pthread_measure_sample_function() -> float:
+    return pthread_measure_sample_function()
 
 def py_run_sample_kernel() -> float:
     return run_sample_kernel()
