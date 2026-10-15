@@ -8,7 +8,8 @@ CUDA_HOME = os.environ.get("CUDA_HOME", "/usr/lib/cuda")
 ext = Extension(
     "wrapper",
     sources=["wrapper.pyx", "test_function.c"],
-    extra_objects=["cuda_test.o"],                      
+    extra_objects=["cuda_test.o"],    
+    depends=["cuda_test.o", "cuda_test.cu", "cuda_test.h"],                  
     libraries=["cudart"],
     extra_link_args=["-lstdc++"],                       
 )

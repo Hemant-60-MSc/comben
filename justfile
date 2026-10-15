@@ -15,4 +15,4 @@ compile-cuda-lib:
     nvcc -c -Xcompiler -fPIC cuda_test.cu -o cuda_test.o
 
 run-multi:
-    mpirun -n $(grep -c ^processor /proc/cpuinfo)  --bind-to core python3 comben_main.py
+    mpirun -n $(grep -c ^processor /proc/cpuinfo)  --bind-to core --mca mpi_yield_when_idle 1 python3 comben_main.py
